@@ -1,5 +1,15 @@
 # SoundBoard project in React Native
 
-```npm i``` or ```yarn```
+```bash
+npm i
+```
 
-```npm start``` or ```yarn start```
+or
+
+```yarn```
+
+```npm start```
+
+or
+
+```yarn start```
