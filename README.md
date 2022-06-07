@@ -4,23 +4,11 @@
 ### Install dependances
 
 ```bash
-npm i /* or */ yarn
-```
-
-or
-
-```bash
-yarn
+npm i  or  yarn
 ```
 
 ### Start dev server
 
 ```bash
-npm start
-```
-
-or
-
-```bash
-yarn start
+npm start  or  yarn start
 ```
