@@ -4,7 +4,7 @@
 ### Install dependances
 
 ```bash
-npm i
+npm i /* or */ yarn
 ```
 
 or
