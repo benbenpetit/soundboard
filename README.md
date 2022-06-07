@@ -6,10 +6,16 @@ npm i
 
 or
 
-```yarn```
+```bash
+yarn
+```
 
-```npm start```
+```bash
+npm start
+```
 
 or
 
-```yarn start```
+```bash
+yarn start
+```
