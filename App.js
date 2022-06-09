@@ -23,7 +23,7 @@ export default function App() {
                 right: 0,
                 bottom: 0
               }}
-              colors={['rgba(45, 41, 74, 1)', 'rgba(45, 41, 74, 0.6)']}
+              colors={['rgba(45, 41, 74, 1)', 'rgba(45, 41, 74, 1)', 'rgba(45, 41, 74, 0.4)']}
               start={{ x: 0, y: 1 }}
               end={{ x: 0, y: 0 }}
             >
@@ -31,6 +31,7 @@ export default function App() {
             </LinearGradient>
           )}
           screenOptions={({ route }) => ({
+            headerShown: false,
             tabBarStyle: {
               backgroundColor: 'transparent',
               borderTopWidth: 0,
@@ -65,7 +66,7 @@ export default function App() {
           <Tab.Screen name="Library" component={Library} />
         </Tab.Navigator>
       </NavigationContainer>
-      <StatusBar backgroundColor='#2D294A' />
+      <StatusBar style='light' />
     </>
   );
 }

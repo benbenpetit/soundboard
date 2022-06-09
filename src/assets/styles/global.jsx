@@ -5,7 +5,7 @@ export const colors = {
 
 export const wrapper = {
   flex: 1,
-  paddingVertical: 30,
+  paddingTop: 60,
   paddingHorizontal: 30,
   backgroundColor: '#1C183A',
 };

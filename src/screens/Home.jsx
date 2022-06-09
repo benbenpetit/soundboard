@@ -51,13 +51,14 @@ const Home = () => {
   return (
     <View style={wrapper}>
       <Text style={text.h1}>Sampl.io</Text>
-      <SafeAreaView style={{ marginTop: 20, marginHorizontal: -10, flex: 1 }}>
+      <SafeAreaView style={{ marginTop: 10, marginHorizontal: -10, flex: 1 }}>
         <FlatList
-          ListEmptyComponent={<Text style={{ fontSize: 16, textAlign: 'center', marginTop: 20, color: '#fff' }}>No sample yet. Go search and add one!</Text>}
           data={samples}
-          numColumns={3}
           renderItem={({ item }) => <Pad sample={item} handleLongPress={(id) => openSampleOptions(id)} />}
           keyExtractor={sample => sample.id}
+          numColumns={3}
+          ListEmptyComponent={<Text style={{ fontSize: 16, textAlign: 'center', marginTop: 20, color: '#fff' }}>No sample yet. Go search and add one!</Text>}
+          ListFooterComponent={<View style={{width: '100%', height: 60}} />}
         />
       </SafeAreaView>
     </View>
