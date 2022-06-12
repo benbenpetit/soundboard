@@ -37,6 +37,14 @@ export const text = {
     color: '#fff',
     fontSize: 32,
     fontWeight: 'bold' 
+  },
+  itemTitle: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  itemSubtitle: {
+    color: '#bbb',
+    fontSize: 12
   }
 };
 

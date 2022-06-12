@@ -59,6 +59,7 @@ const Home = () => {
           numColumns={3}
           ListEmptyComponent={<Text style={{ fontSize: 16, textAlign: 'center', marginTop: 20, color: '#fff' }}>No sample yet. Go search and add one!</Text>}
           ListFooterComponent={<View style={{width: '100%', height: 60}} />}
+          showsVerticalScrollIndicator={false}
         />
       </SafeAreaView>
     </View>
