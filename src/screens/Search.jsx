@@ -1,25 +1,37 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, Image, Keyboard, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, Keyboard, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { text, wrapper, searchInput, position } from 'assets/styles/global';
 import Svg, { Path } from 'react-native-svg';
+import { useDebounce } from 'use-debounce';
 
-const SearchResult = ({ sound, handlePress }) => {
+const SearchResult = ({ sound, handleSongPress, handleOptionsPress }) => {
+  const formatDuration = (duration) => {
+    if (!duration.toString().includes('.')) {
+      return `${duration.toString()}:00`;
+    }
+
+    const durationSplit = duration.toString().split('.');
+
+    return `${durationSplit[0]}:${durationSplit[1].slice(0, 2)}`;
+  }
+
   return (
     <TouchableOpacity
-      onPress={() => handlePress(sound.id)}
+      onPress={() => handleSongPress(sound.id)}
+      onLongPress={() => handleOptionsPress(sound.id)}
       activeOpacity={0.8}
       style={[position.rowSpace, { flex: 1, paddingVertical: 7 }]}
     >
       <Image
         style={{ width: 52, height: 52, borderRadius: 6 }}
-        source={{ uri: 'https://www.thebackpackerz.com/wp-content/uploads/2016/02/the-life-of-pablo-kanye-west.jpg' }}
+        source={{ uri: sound.cover }}
       />
       <View style={{ flex: 1, marginHorizontal: 14 }}>
-        <Text style={[text.itemTitle, { marginBottom: 4 }]}>Wolves</Text>
-        <Text style={text.itemSubtitle}>5:01 • The Life Of Pablo</Text>
+        <Text numberOfLines={1} ellipsizeMode='tail' style={[text.itemTitle, { marginBottom: 4 }]}>{sound.description}</Text>
+        <Text numberOfLines={1} ellipsizeMode='tail' style={text.itemSubtitle}>{formatDuration(sound.duration)} • {sound.title}</Text>
       </View>
       <TouchableOpacity
-        onPress={() => console.log(`Options n°${sound.id}`)}
+        onPress={() => handleOptionsPress(sound.id)}
         activeOpacity={0.8}
         style={[{ height: '100%' }, position.columnCenter]}
       >
@@ -32,69 +44,66 @@ const SearchResult = ({ sound, handlePress }) => {
 }
 
 const Search = () => {
-  const [sounds, setSounds] = useState([]);
+  const [sounds, setSounds] = useState();
   const [searchTextInput, setSearchTextInput] = useState('');
+  const [searchTextInputDebounced] = useDebounce(searchTextInput, 600);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const fetchFreesoundApi = () => {
-    console.log('Freesound Api call');
+  const fetchFreesoundApi = async (query) => {
+    const baseUrl = 'https://freesound.org/apiv2';
+    const token = 'bn7aVBxK6UImjuoZY5pc4erzFbkvwRvi8MtEPGug';
+    setIsLoading(true);
+
+    try {
+      const result = await fetch(`${baseUrl}/search/text/?token=${token}&query=${query}`);
+      const json = await result.json();
+      const soundsId = json.results.map(sound => sound.id);
+      const sounds = await Promise.all(soundsId.map(async soundId => {
+        try {
+          const result = await fetch(`${baseUrl}/sounds/${soundId}/?token=${token}`);
+          const sound = await result.json();
+          return {
+            id: sound.id,
+            description: sound.description,
+            title: sound.name,
+            duration: sound.duration,
+            url: sound.previews['preview-hq-mp3'],
+            cover: sound.images.waveform_bw_m
+          }
+        } catch (error) {
+          console.log('Error', error);
+          return undefined;
+        }
+      }));
+      setSounds(sounds);
+    } catch (error) {
+      console.log('Erreur', error);
+    }
+
+    setIsLoading(false);
+    console.log(isLoading);
   };
 
   useEffect(() => {
     if (searchTextInput.trim() === '') {
-      setSounds([]);
       return;
     }
 
-    fetchFreesoundApi();
-  }, [searchTextInput]);
+    fetchFreesoundApi(searchTextInput);
+  }, [searchTextInputDebounced]);
 
   useEffect(() => {
-    setSounds([
-      {
-        id: 1,
-        name: 'Doubi'
-      },
-      {
-        id: 2,
-        name: 'She3esh'
-      },
-      {
-        id: 3,
-        name: 'She3esh'
-      },
-      {
-        id: 4,
-        name: 'She3esh'
-      },
-      {
-        id: 5,
-        name: 'She3esh'
-      },
-      {
-        id: 6,
-        name: 'Doubi'
-      },
-      {
-        id: 7,
-        name: 'She3esh'
-      },
-      {
-        id: 8,
-        name: 'She3esh'
-      },
-      {
-        id: 9,
-        name: 'She3esh'
-      },
-      {
-        id: 10,
-        name: 'She3esh'
-      }
-    ]);
-  }, []);
+    if (searchTextInput.trim() === '') {
+      setSounds([]);
+    }
+  }, [searchTextInput]);
 
   const playSound = (id) => {
-    console.log(id);
+    console.log('Play', id);
+  }
+
+  const openSoundOptions = (id) => {
+    console.log('Options', id);
   }
 
   return (
@@ -122,14 +131,29 @@ const Search = () => {
         </TouchableOpacity>
       </View>
       <SafeAreaView style={{ marginTop: 20, flex: 1 }}>
-        <FlatList
-          data={sounds}
-          renderItem={({ item }) => <SearchResult sound={item} handlePress={(id) => playSound(id)} />}
-          keyExtractor={sound => sound.id}
-          onScrollBeginDrag={Keyboard.dismiss}
-          ListFooterComponent={<View style={{width: '100%', height: 60}} />}
-          showsVerticalScrollIndicator={false}
-        />
+        {!isLoading ?
+          <FlatList
+            data={sounds}
+            renderItem={({ item }) => (
+              <SearchResult
+                sound={item}
+                handleSongPress={(id) => playSound(id)}
+                handleOptionsPress={(id) => openSoundOptions(id)}
+              />
+            )}
+            contentContainerStyle={{ flexGrow: 1 }}
+            ListEmptyComponent={(
+              <View style={[{ flex: 1, paddingBottom: 100 }, position.columnCenter]}>
+                <Text style={[text.itemTitle, { textAlign: 'center' }]}>No result</Text>
+                <Text style={[text.h1, { textAlign: 'center', marginTop: 10 }]}>Search any sound by keyword</Text>
+              </View>
+            )}
+            keyExtractor={sound => sound.id}
+            onScrollBeginDrag={Keyboard.dismiss}
+            ListFooterComponent={<View style={{ width: '100%', height: 60 }} />}
+            showsVerticalScrollIndicator={false}
+          />
+          : <ActivityIndicator style={{ marginTop: 20 }} />}
       </SafeAreaView>
     </View>
   )
