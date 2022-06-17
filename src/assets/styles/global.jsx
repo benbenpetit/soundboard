@@ -10,6 +10,18 @@ export const wrapper = {
   backgroundColor: '#1C183A',
 };
 
+export const global = {
+  shadow: {
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.27,
+    shadowRadius: 4.65
+  }
+}
+
 export const position = {
   columnCenter: {
     alignItems: 'center',
@@ -36,7 +48,12 @@ export const text = {
   h1: {
     color: '#fff',
     fontSize: 32,
-    fontWeight: 'bold' 
+    fontWeight: 'bold'
+  },
+  h2: {
+    color: '#fff',
+    fontSize: 22,
+    fontWeight: 'bold'
   },
   itemTitle: {
     color: '#fff',

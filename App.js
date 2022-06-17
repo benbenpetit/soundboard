@@ -6,10 +6,14 @@ import Home from 'screens/Home';
 import Search from 'screens/Search';
 import Library from 'screens/Library';
 import TabIcon from 'components/TabIcon';
+import Playbar from 'components/Playbar';
+import { useState } from 'react';
 
 const Tab = createBottomTabNavigator();
 
 export default function App() {
+  const [isShowPlaybar, setIsShowPlaybar] = useState(true);
+
   return (
     <>
       <NavigationContainer>
@@ -65,6 +69,7 @@ export default function App() {
           <Tab.Screen name="Library" component={Library} />
         </Tab.Navigator>
       </NavigationContainer>
+      {isShowPlaybar && <Playbar />}
       <StatusBar style='light' />
     </>
   );

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FlatList, SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
 import { text, wrapper } from 'assets/styles/global';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -7,7 +7,7 @@ const Pad = ({ sample, handleLongPress }) => {
   return (
     <TouchableOpacity
       onLongPress={() => handleLongPress(sample.id)}
-      activeOpacity={0.6}
+      activeOpacity={0.8}
       style={{ flex: 1, margin: 10 }}
     >
       <LinearGradient
@@ -58,7 +58,7 @@ const Home = () => {
           keyExtractor={sample => sample.id}
           numColumns={3}
           ListEmptyComponent={<Text style={{ fontSize: 16, textAlign: 'center', marginTop: 20, color: '#fff' }}>No sample yet. Go search and add one!</Text>}
-          ListFooterComponent={<View style={{width: '100%', height: 60}} />}
+          ListFooterComponent={<View style={{ width: '100%', height: 145 }} />}
           showsVerticalScrollIndicator={false}
         />
       </SafeAreaView>
