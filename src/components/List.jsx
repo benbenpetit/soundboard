@@ -34,8 +34,8 @@ const List = ({
       contentContainerStyle={{ flexGrow: 1 }}
       ListEmptyComponent={(
         <View style={[{ flex: 1, paddingBottom: 100 }, position.columnCenter]}>
-          {emptyTitle && <Text style={[text.itemTitle, { textAlign: 'center' }]}>{emptyTitle}</Text>}
-          {emptyDesc && <Text style={[text.h1, { textAlign: 'center', marginTop: 10 }]}>{emptyDesc}</Text>}
+          {emptyTitle && <Text style={[text.h1, { textAlign: 'center' }]}>{emptyTitle}</Text>}
+          {emptyDesc && <Text style={[text.itemTitle, { textAlign: 'center', marginTop: 10 }]}>{emptyDesc}</Text>}
         </View>
       )}
       keyExtractor={item => item.id}

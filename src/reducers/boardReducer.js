@@ -4,13 +4,13 @@ const boardSlice = createSlice({
   name: 'board',
   initialState: [],
   reducers: {
-    addSound: (state, action) => {
+    addSoundBoard: (state, action) => {
       return [...state, { ...action.payload.sound }];
     },
-    removeSound: (state, action) => {
+    removeSoundBoard: (state, action) => {
       return state.filter(sound => sound.id != action.payload.id);
     },
-    updateSound: (state, action) => {
+    updateSoundBoard: (state, action) => {
       return state.map(sound =>
         sound.id === action.payload.id ? action.payload : sound
       );
@@ -18,7 +18,7 @@ const boardSlice = createSlice({
   }
 });
 
-export const { addSound, removeSound, updateSound } = boardSlice.actions;
+export const { addSoundBoard, removeSoundBoard, updateSoundBoard } = boardSlice.actions;
 export const boardSelector = (state) => state;
 
-export const boardReducer = boardSlice.reducer;
+export default boardSlice.reducer;

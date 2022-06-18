@@ -13,6 +13,7 @@ module.exports = function (api) {
             components: './src/components',
             screens: './src/screens',
             utils: './src/utils',
+            services: './src/services',
             reducers: './src/reducers',
           }
         }

@@ -1,82 +1,16 @@
-import { StatusBar } from 'expo-status-bar';
-import { NavigationContainer } from '@react-navigation/native';
-import { BottomTabBar, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { LinearGradient } from 'expo-linear-gradient';
-import Home from 'screens/Home';
-import Search from 'screens/Search';
-import Library from 'screens/Library';
-import TabIcon from 'components/TabIcon';
-import Playbar from 'components/Playbar';
-import { useState } from 'react';
 import { Provider } from 'react-redux';
 import store from './store';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
-
-const Tab = createBottomTabNavigator();
+import Root from './Root';
 
 export default function App() {
-  const [isShowPlaybar, setIsShowPlaybar] = useState(true);
   const persistor = persistStore(store);
 
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor}>
-        <NavigationContainer>
-          <Tab.Navigator
-            tabBar={(props) => (
-              <LinearGradient
-                style={{
-                  position: 'absolute',
-                  left: 0,
-                  right: 0,
-                  bottom: 0
-                }}
-                colors={['rgba(45, 41, 74, 1)', 'rgba(45, 41, 74, 1)', 'rgba(45, 41, 74, 0.4)']}
-                start={{ x: 0, y: 1 }}
-                end={{ x: 0, y: 0 }}
-              >
-                <BottomTabBar {...props} />
-              </LinearGradient>
-            )}
-            screenOptions={({ route }) => ({
-              headerShown: false,
-              tabBarStyle: {
-                backgroundColor: 'transparent',
-                borderTopWidth: 0,
-                height: 90,
-                paddingTop: 10,
-              },
-              tabBarItemStyle: {
-                justifyContent: 'center'
-              },
-              tabBarLabelStyle: {
-                fontSize: 11
-              },
-              tabBarActiveTintColor: '#ffffff',
-              tabBarInactiveTintColor: '#bdbdbd',
-              tabBarIcon: ({ focused }) => {
-                let iconName;
-
-                if (route.name === 'Home') {
-                  iconName = focused ? 'home-full' : 'home-outline';
-                } else if (route.name === 'Search') {
-                  iconName = focused ? 'search-full' : 'search-outline';
-                } else if (route.name === 'Library') {
-                  iconName = focused ? 'library-full' : 'library-outline';
-                }
-
-                return <TabIcon name={iconName} />
-              }
-            })}
-          >
-            <Tab.Screen name="Home" component={Home} />
-            <Tab.Screen name="Search" component={Search} />
-            <Tab.Screen name="Library" component={Library} />
-          </Tab.Navigator>
-        </NavigationContainer>
-        {isShowPlaybar && <Playbar />}
-        <StatusBar style='light' />
+        <Root />
       </PersistGate>
     </Provider>
   );

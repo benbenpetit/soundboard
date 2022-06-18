@@ -1,7 +1,8 @@
 import React from 'react';
-import { Image, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Keyboard, Text, TouchableOpacity, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { position, text } from 'assets/styles/global';
+import { formatDuration } from 'utils/formatting';
 
 // Usage:
 
@@ -16,20 +17,13 @@ const ListItem = ({
   handlePrimaryAction,
   handleSecondaryAcrion
 }) => {
-  const formatDuration = (duration) => {
-    if (!duration.toString().includes('.')) {
-      return `${duration.toString()}:00`;
-    }
-
-    const durationSplit = duration.toString().split('.');
-
-    return `${durationSplit[0]}:${durationSplit[1].slice(0, 2)}`;
-  }
-
   return (
     <TouchableOpacity
-      onPress={() => handlePrimaryAction(item.id)}
-      onLongPress={() => handleSecondaryAcrion(item.id)}
+      onPress={() => {
+        handlePrimaryAction(item);
+        Keyboard.dismiss();
+      }}
+      onLongPress={() => handleSecondaryAcrion(item)}
       activeOpacity={0.8}
       style={[position.rowSpace, { flex: 1, paddingVertical: 7 }]}
     >
@@ -42,7 +36,7 @@ const ListItem = ({
         <Text numberOfLines={1} ellipsizeMode='tail' style={text.itemSubtitle}>{formatDuration(item.duration)} • {item.title}</Text>
       </View>
       <TouchableOpacity
-        onPress={() => handleSecondaryAcrion(item.id)}
+        onPress={() => handleSecondaryAcrion(item)}
         activeOpacity={0.8}
         style={[{ height: '100%' }, position.columnCenter]}
       >

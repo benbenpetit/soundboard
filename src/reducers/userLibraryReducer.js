@@ -2,18 +2,39 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const userLibrarySlice = createSlice({
   name: 'userLibrary',
-  initialState: [],
+  initialState: {
+    filterBy: 'DATE_ASC',
+    sounds: []
+  },
   reducers: {
-    addSound: (state, action) => {
-      return [...state, { ...action.payload.sound }];
+    setFilterLibrary: (state, action) => {
+      return {
+        ...state,
+        filterBy: action.payload
+      };
     },
-    removeSound: (state, action) => {
-      return state.filter(sound => sound.id != action.payload.id);
+    addSoundLibrary: (state, action) => {
+      return {
+        ...state,
+        sounds: [
+          ...state.sounds,
+          {
+            ...action.payload,
+            addedDate: new Date()
+          }
+        ]
+      };
+    },
+    removeSoundLibrary: (state, action) => {
+      return {
+        ...state,
+        sounds: state.sounds.filter(sound => sound.id != action.payload.id)
+      }
     }
   }
 });
 
-export const { addSound, removeSound } = userLibrarySlice.actions;
-export const soundsSelector = (state) => state;
+export const { setFilterLibrary, addSoundLibrary, removeSoundLibrary } = userLibrarySlice.actions;
+export const userLibrarySelector = (state) => state;
 
-export const userLibraryReducer = userLibrarySlice.reducer;
+export default userLibrarySlice.reducer;

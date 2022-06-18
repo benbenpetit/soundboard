@@ -4,20 +4,32 @@ import { text, wrapper, searchInput } from 'assets/styles/global';
 import Svg, { Path } from 'react-native-svg';
 import { useDebounce } from 'use-debounce';
 import List from 'components/List';
-import { getSongsByName } from 'services/freeSound';
+import { getSoundsByName } from 'services/freeSound';
+import { useDispatch, useSelector } from 'react-redux';
+import { setPlay, setShow, setSound } from 'reducers/playbarReducer';
+import OptionsModal from 'components/OptionsModal';
+import { addSoundLibrary, removeSoundLibrary, userLibrarySelector } from 'reducers/userLibraryReducer';
 
 const Search = () => {
+  const dispatch = useDispatch();
   const [sounds, setSounds] = useState();
+  const [selectedSound, setSelectedSound] = useState(null);
   const [searchTextInput, setSearchTextInput] = useState('');
   const [searchTextInputDebounced] = useDebounce(searchTextInput, 600);
   const [isLoading, setIsLoading] = useState(false);
+  const [isShowSoundOptionsModal, setIsShowSoundOptionsModal] = useState(false);
   const inputRef = useRef(null);
+  const userLibrary = useSelector(userLibrarySelector).userLibrary;
 
   const fetchFreesoundApi = async (query) => {
     setIsLoading(true);
-    setSounds(await getSongsByName(query));
+    setSounds(await getSoundsByName(query));
     setIsLoading(false);
   };
+
+  useEffect(() => {
+    console.log(userLibrary);
+  }, [userLibrary]);
 
   useEffect(() => {
     if (searchTextInput.trim() === '') {
@@ -33,12 +45,15 @@ const Search = () => {
     }
   }, [searchTextInput]);
 
-  const playSound = (id) => {
-    console.log('Play', id);
+  const playSound = (sound) => {
+    dispatch(setSound(sound));
+    dispatch(setShow(true));
+    dispatch(setPlay(true));
   }
 
-  const openSoundOptions = (id) => {
-    console.log('Options', id);
+  const openSoundOptions = (sound) => {
+    setSelectedSound(sound);
+    setIsShowSoundOptionsModal(true);
   }
 
   return (
@@ -54,7 +69,7 @@ const Search = () => {
         </Svg>
         <TextInput
           ref={inputRef}
-          style={[styles.textInput, { flex: 1, marginHorizontal: 10 }]}
+          style={[styles.textInput, { flex: 1, minWidth: 0, marginHorizontal: 10 }]}
           onChangeText={setSearchTextInput}
           value={searchTextInput}
           placeholder="Sound, instrument, tag..."
@@ -74,13 +89,23 @@ const Search = () => {
         {!isLoading ? (
           <List
             items={sounds}
-            handlePrimaryAction={(id) => playSound(id)}
-            handleSecondaryAcrion={(id) => openSoundOptions(id)}
+            handlePrimaryAction={(sound) => playSound(sound)}
+            handleSecondaryAcrion={(sound) => openSoundOptions(sound)}
             emptyTitle='No result'
             emptyDesc='Search any sound by keyword'
           />
         ) : <ActivityIndicator style={{ marginTop: 20 }} />}
       </SafeAreaView>
+      <OptionsModal
+        sound={selectedSound}
+        isShowModal={isShowSoundOptionsModal}
+        handleCloseModal={() => setIsShowSoundOptionsModal(false)}
+        actions={[
+          { label: 'Add to library', function: () => dispatch(addSoundLibrary(selectedSound)) },
+          { label: 'Delete', function: () => dispatch(removeSoundLibrary(selectedSound)) },
+          { label: 'Cancel' }
+        ]}
+      />
     </View>
   )
 }

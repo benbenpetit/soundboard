@@ -1,7 +1,7 @@
 const baseUrl = 'https://freesound.org/apiv2';
 const token = 'bn7aVBxK6UImjuoZY5pc4erzFbkvwRvi8MtEPGug';
 
-export const getSongsByName = async (query) => {
+export const getSoundsByName = async (query) => {
   try {
     const result = await fetch(`${baseUrl}/search/text/?token=${token}&query=${query}`);
     const json = await result.json();
