@@ -10,10 +10,18 @@ import TabIcon from 'components/TabIcon';
 import Playbar from 'components/Playbar';
 import { playbarSelector } from 'reducers/playbarReducer';
 import { useEffect } from 'react';
+import { playAudio, setAudio } from 'utils/audio';
 
 const Root = () => {
   const Tab = createBottomTabNavigator();
   const playbarState = useSelector(playbarSelector).playbar;
+
+  useEffect(() => {
+    if (playbarState.isPlaying && playbarState.sound) {
+      await setAudio(playbarState.sound.uri);
+      await playAudio();
+    }
+  }, [playbarState.isPlaying]);
 
   return (
     <>
