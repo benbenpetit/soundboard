@@ -13,7 +13,7 @@ module.exports = function (api) {
             components: './src/components',
             screens: './src/screens',
             utils: './src/utils',
-            store: './src/store',
+            reducers: './src/reducers',
           }
         }
       ]
