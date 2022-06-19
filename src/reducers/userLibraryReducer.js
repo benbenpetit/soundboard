@@ -28,7 +28,7 @@ const userLibrarySlice = createSlice({
     removeSoundLibrary: (state, action) => {
       return {
         ...state,
-        sounds: state.sounds.filter(sound => sound.id != action.payload.id)
+        sounds: state.sounds.filter(sound => sound.id != action.payload)
       }
     }
   }

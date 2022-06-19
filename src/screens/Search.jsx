@@ -28,10 +28,6 @@ const Search = () => {
   };
 
   useEffect(() => {
-    console.log(userLibrary);
-  }, [userLibrary]);
-
-  useEffect(() => {
     if (searchTextInput.trim() === '') {
       return;
     }
@@ -48,7 +44,6 @@ const Search = () => {
   const playSound = (sound) => {
     dispatch(setSound(sound));
     dispatch(setShow(true));
-    dispatch(setPlay(true));
   }
 
   const openSoundOptions = (sound) => {

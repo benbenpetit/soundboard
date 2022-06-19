@@ -6,7 +6,7 @@ import { SafeAreaView, Text, TouchableOpacity, View } from 'react-native'
 import Svg, { Path } from 'react-native-svg';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPlay, setShow, setSound } from 'reducers/playbarReducer';
-import { setFilterLibrary, userLibrarySelector } from 'reducers/userLibraryReducer';
+import { removeSoundLibrary, setFilterLibrary, userLibrarySelector } from 'reducers/userLibraryReducer';
 
 const FILTERBY_DATA = [
   { key: 'DATE_ASC', label: 'Rencently added' },
@@ -45,7 +45,6 @@ const Library = () => {
   const playSound = (sound) => {
     dispatch(setSound(sound));
     dispatch(setShow(true));
-    dispatch(setPlay(true));
   }
 
   const openSoundOptions = (sound) => {
@@ -63,7 +62,7 @@ const Library = () => {
           activeOpacity={0.6}
           style={[position.rowCenter, { marginLeft: 10, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 8, backgroundColor: 'rgba(255, 255, 255, 0.1)' }]}
         >
-          <Text style={{ color: '#fff' }}>{getFilterbyLabel(userLibrary.filterBy)}</Text>
+          <Text style={{ color: '#fff' }}>{userLibrary.filterBy ? getFilterbyLabel(userLibrary.filterBy) : ''}</Text>
           <Svg style={{ marginLeft: 8 }} width={9} height={9} viewBox="0 0 9 9" fill="none">
             <Path fill="#fff" d="M4.128 8.087.751 4.334a.5.5 0 0 1 .372-.834h6.754a.5.5 0 0 1 .372.834L4.872 8.087a.5.5 0 0 1-.744 0z" />
           </Svg>
@@ -71,7 +70,7 @@ const Library = () => {
       </View>
       <SafeAreaView style={{ marginTop: 20, flex: 1 }}>
         <List
-          items={sortSounds(userLibrary.sounds)}
+          items={userLibrary.sounds ? sortSounds(userLibrary.sounds) : null}
           handlePrimaryAction={(sound) => playSound(sound)}
           handleSecondaryAcrion={(sound) => openSoundOptions(sound)}
           emptyTitle='No sound yet'
@@ -92,7 +91,7 @@ const Library = () => {
         handleCloseModal={() => setIsShowSoundOptionsModal(false)}
         actions={[
           { label: 'Modify', function: () => console.log('Modifier') },
-          { label: 'Delete', function: () => console.log('Supprimer') },
+          { label: 'Delete', function: () => dispatch(removeSoundLibrary(selectedSound.id)) },
           { label: 'Cancel' }
         ]}
       />

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Image, Text, TouchableOpacity, View, Animated, Easing } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { BlurView } from 'expo-blur';
@@ -6,9 +6,11 @@ import { position, text } from 'assets/styles/global';
 import { useDispatch } from 'react-redux';
 import { setPlay } from 'reducers/playbarReducer';
 import { formatDuration } from 'utils/formatting';
+import { playAudio, playAudioAtPosition, setAudio, stopAudio } from 'utils/audio';
 
 const Playbar = ({ isShow, isPlaying, sound }) => {
   const dispatch = useDispatch();
+  const [playingSound, setPlayingSound] = useState(null);
   const appearAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -24,6 +26,58 @@ const Playbar = ({ isShow, isPlaying, sound }) => {
       }
     ).start();
   }, [isShow]);
+
+  const onAudioUpdate = async (audioStatus) => {
+    if (!audioStatus.isLoaded) {
+      if (audioStatus.error) {
+        console.log(`Encountered a fatal error during playback: ${audioStatus.error}`);
+      }
+    } else {
+      if (audioStatus.isPlaying) {
+        dispatch(setPlay(true));
+      } else {
+        dispatch(setPlay(false));
+      }
+
+      if (audioStatus.didJustFinish && !audioStatus.isLooping) {
+        // dispatch(setPlay(false));
+        setPlayingSound(null);
+      }
+    }
+  }
+
+  const playSelectedSound = async () => {
+    if (playingSound) {
+      await playingSound.audio.stopAsync();
+      await playingSound.audio.unloadAsync();
+    }
+
+    const audio = await setAudio({
+      url: sound.url,
+      onPlaybackStatusUpdate: onAudioUpdate
+    });
+    if (audio) {
+      await playAudio(audio);
+      setPlayingSound({
+        id: sound.id,
+        audio: audio
+      });
+    }
+  }
+
+  const togglePlay = async () => {
+    if (isPlaying) {
+      await playingSound.audio.pauseAsync();
+    } else {
+      await playAudioAtPosition(playingSound.audio);
+    }
+  }
+
+  useEffect(() => {
+    if (sound) {
+      playSelectedSound();
+    }
+  }, [sound]);
 
   return (
     <Animated.View
@@ -51,7 +105,7 @@ const Playbar = ({ isShow, isPlaying, sound }) => {
           <Text numberOfLines={1} ellipsizeMode='tail' style={text.itemSubtitle}>{formatDuration(sound.duration)} • {sound.title}</Text>
         </View>
         <TouchableOpacity
-          onPress={() => dispatch(setPlay(!isPlaying))}
+          onPress={togglePlay}
           activeOpacity={0.6}
           style={{ padding: 8 }}
         >
