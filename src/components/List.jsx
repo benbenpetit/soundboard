@@ -9,7 +9,7 @@ import ListItem from './ListItem';
 // <List
 //   items={sounds}
 //   handlePrimaryAction={(id) => playSound(id)}
-//   handleSecondaryAcrion={(id) => openSoundOptions(id)}
+//   handleSecondaryAction={(id) => openSoundOptions(id)}
 //   emptyTitle='No result'
 //   emptyDesc='Search any sound by keyword'
 // />
@@ -17,9 +17,11 @@ import ListItem from './ListItem';
 const List = ({
   items,
   handlePrimaryAction,
-  handleSecondaryAcrion,
+  handleSecondaryAction,
   emptyTitle,
-  emptyDesc
+  emptyDesc,
+  showOptions = true,
+  showPlus = false
 }) => {
   return (
     <FlatList
@@ -28,9 +30,12 @@ const List = ({
         <ListItem
           item={item}
           handlePrimaryAction={handlePrimaryAction}
-          handleSecondaryAcrion={handleSecondaryAcrion}
+          handleSecondaryAction={handleSecondaryAction}
+          showOptions={showOptions}
+          showPlus={showPlus}
         />
       )}
+      onStartShouldSetResponder={() => true}
       contentContainerStyle={{ flexGrow: 1 }}
       ListEmptyComponent={(
         <View style={[{ flex: 1, paddingBottom: 100 }, position.columnCenter]}>

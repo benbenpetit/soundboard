@@ -85,7 +85,7 @@ const Search = () => {
           <List
             items={sounds}
             handlePrimaryAction={(sound) => playSound(sound)}
-            handleSecondaryAcrion={(sound) => openSoundOptions(sound)}
+            handleSecondaryAction={(sound) => openSoundOptions(sound)}
             emptyTitle='No result'
             emptyDesc='Search any sound by keyword'
           />

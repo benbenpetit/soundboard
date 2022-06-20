@@ -1,11 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit';
+import uuid from 'react-native-uuid';
 
 const boardSlice = createSlice({
   name: 'board',
   initialState: [],
   reducers: {
     addSoundBoard: (state, action) => {
-      return [...state, { ...action.payload.sound }];
+      return [
+        ...state, 
+        {
+          ...action.payload,
+          id: uuid.v4()
+        }
+      ];
     },
     removeSoundBoard: (state, action) => {
       return state.filter(sound => sound.id != action.payload.id);

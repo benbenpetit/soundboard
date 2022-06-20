@@ -5,7 +5,7 @@ export const getSoundsByName = async (query) => {
   try {
     const result = await fetch(`${baseUrl}/search/text/?token=${token}&query=${query}`);
     const json = await result.json();
-    const soundsId = json.results.slice(0, 10).map(sound => sound.id);
+    const soundsId = json.results.slice(0, 12).map(sound => sound.id);
     const sounds = await Promise.all(soundsId.map(async soundId => {
       try {
         const result = await fetch(`${baseUrl}/sounds/${soundId}/?token=${token}`);

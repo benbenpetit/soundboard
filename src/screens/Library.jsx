@@ -72,7 +72,7 @@ const Library = () => {
         <List
           items={userLibrary.sounds ? sortSounds(userLibrary.sounds) : null}
           handlePrimaryAction={(sound) => playSound(sound)}
-          handleSecondaryAcrion={(sound) => openSoundOptions(sound)}
+          handleSecondaryAction={(sound) => openSoundOptions(sound)}
           emptyTitle='No sound yet'
           emptyDesc='Add any sound from search, device file, or recording'
         />

@@ -1,68 +1,137 @@
 import React, { useState } from 'react';
-import { FlatList, SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
-import { text, wrapper } from 'assets/styles/global';
+import { FlatList, SafeAreaView, Text, TouchableOpacity, View, Platform } from 'react-native';
+import { position, text, wrapper } from 'assets/styles/global';
 import { LinearGradient } from 'expo-linear-gradient';
+import Svg, { Path } from 'react-native-svg';
+import LinesEllipsis from 'react-lines-ellipsis';
+import { useDispatch, useSelector } from 'react-redux';
+import { addSoundBoard, boardSelector } from 'reducers/boardReducer';
+import OptionsModal from 'components/OptionsModal';
+import AddSampleModal from 'components/AddSampleModal';
+import SampleModifyModal from 'components/SampleModifyModal';
+import { setShow, setSound } from 'reducers/playbarReducer';
+import { setAudio } from 'utils/audio';
 
-const Pad = ({ sample, handleLongPress }) => {
+const Pad = ({ sample, handlePress, handleLongPress }) => {
+  return (
+    <View style={{ flex: 1 / 3 }}>
+      <TouchableOpacity
+        onLongPress={handleLongPress}
+        onPress={handlePress}
+        activeOpacity={0.8}
+        style={{ margin: 10 }}
+      >
+        <LinearGradient
+          style={[position.rowCenter, { width: '100%', borderRadius: 10, aspectRatio: 1 / 1, padding: 14 }]}
+          colors={['rgba(188, 109, 201, 1)', 'rgba(39, 111, 177, 0.62)']}
+          start={{ x: 0.65, y: 0 }}
+          end={{ x: 1.2, y: 1 }}
+        >
+          {Platform.OS === 'web'
+            ? <LinesEllipsis
+              text={sample.description}
+              maxLine='4'
+              ellipsis='...'
+              trimRight
+              basedOn='letters'
+              style={{ textAlign: 'center', color: '#fff', fontSize: 15 }}
+            />
+            : <Text numberOfLines={4} style={{ textAlign: 'center', color: '#fff', fontSize: 15 }}>{sample.description}</Text>
+          }
+        </LinearGradient>
+      </TouchableOpacity>
+    </View>
+  )
+}
+
+const AddButton = ({ onPress }) => {
   return (
     <TouchableOpacity
-      onLongPress={() => handleLongPress(sample.id)}
+      onPress={onPress}
       activeOpacity={0.8}
       style={{ flex: 1, margin: 10 }}
     >
       <LinearGradient
-        style={{ width: '100%', borderRadius: 10, aspectRatio: 1 / 1 }}
+        style={[position.rowCenter, { width: '100%', borderRadius: 10, padding: 20, borderColor: 'rgba(255, 255, 255, 0.6)', borderWidth: 1 }]}
         colors={['rgba(188, 109, 201, 1)', 'rgba(39, 111, 177, 0.62)']}
         start={{ x: 0.65, y: 0 }}
         end={{ x: 1.2, y: 1 }}
-      />
-    </TouchableOpacity >
+      >
+        <Svg width={16} height={16} viewBox="0 0 20 20">
+          <Path fill="#fff" d="M10 3a1 1 0 0 1 1 1v5h5a1 1 0 1 1 0 2h-5v5a1 1 0 1 1-2 0v-5H4a1 1 0 1 1 0-2h5V4a1 1 0 0 1 1-1z" />
+        </Svg>
+        <Text style={{ marginLeft: 6, color: '#fff', fontSize: 16 }}>Add song</Text>
+      </LinearGradient>
+    </TouchableOpacity>
   )
 }
 
 const Home = () => {
-  const samples = [
-    {
-      id: 1,
-      name: 'Doubi'
-    },
-    {
-      id: 2,
-      name: 'She3esh'
-    },
-    {
-      id: 3,
-      name: 'She3esh'
-    },
-    {
-      id: 4,
-      name: 'She3esh'
-    },
-    {
-      id: 5,
-      name: 'She3esh'
-    }
-  ];
+  const [isShowAddSampleModal, setIsShowAddSampleModal] = useState(false);
+  const [isShowSampleOptionsModal, setIsShowSampleOptionsModal] = useState(false);
+  const [isShowSampleModifyModal, setIsShowSampleModifyModal] = useState(false);
+  const [selectedSound, setSelectedSound] = useState(null);
+  const samples = useSelector(boardSelector).board;
+  const dispatch = useDispatch();
 
-  const openSampleOptions = (id) => {
-    console.log(id);
+  const openAddSample = () => {
+    setIsShowAddSampleModal(true);
+  }
+
+  const openSampleModify = (item) => {
+    setIsShowSampleModifyModal(true);
+  }
+
+  const playGlobalSound = (sound) => {
+    dispatch(setSound(sound));
+    dispatch(setShow(true));
+  }
+
+  const addSongToBoard = (sound) => {
+    setIsShowAddSampleModal(false);
+    dispatch(addSoundBoard(sound));
+  }
+
+  const playSample = async (sample) => {
+    const audio = await setAudio(sample);
+    audio.playAsync();
   }
 
   return (
-    <View style={wrapper}>
-      <Text style={text.h1}>Sampl.io</Text>
-      <SafeAreaView style={{ marginTop: 10, marginHorizontal: -10, flex: 1 }}>
-        <FlatList
-          data={samples}
-          renderItem={({ item }) => <Pad sample={item} handleLongPress={(id) => openSampleOptions(id)} />}
-          keyExtractor={sample => sample.id}
-          numColumns={3}
-          ListEmptyComponent={<Text style={{ fontSize: 16, textAlign: 'center', marginTop: 20, color: '#fff' }}>No sample yet. Go search and add one!</Text>}
-          ListFooterComponent={<View style={{ width: '100%', height: 145 }} />}
-          showsVerticalScrollIndicator={false}
-        />
-      </SafeAreaView>
-    </View>
+    <>
+      <View style={wrapper}>
+        <Text style={text.h1}>Sampl.io</Text>
+        <SafeAreaView style={{ marginTop: 10, marginHorizontal: -10, flex: 1 }}>
+          <FlatList
+            data={samples}
+            renderItem={({ item }) => (
+              <Pad
+                sample={item}
+                handlePress={() => playSample(item)}
+                handleLongPress={() => openSampleModify(item)}
+              />
+            )}
+            keyExtractor={sample => sample.id}
+            numColumns={3}
+            ListHeaderComponent={<AddButton onPress={openAddSample} />}
+            stickyHeaderIndices={[0]}
+            ListEmptyComponent={<Text style={{ fontSize: 16, textAlign: 'center', marginTop: 20, color: '#fff' }}>No sample yet. Go search and add one!</Text>}
+            ListFooterComponent={<View style={{ width: '100%', height: 145 }} />}
+            showsVerticalScrollIndicator={false}
+          />
+        </SafeAreaView>
+      </View>
+      <AddSampleModal
+        isShowModal={isShowAddSampleModal}
+        handleCloseModal={() => setIsShowAddSampleModal(false)}
+        handlePrimaryAction={(sound) => playGlobalSound(sound)}
+        handleSecondaryAction={(sound) => addSongToBoard(sound)}
+      />
+      <SampleModifyModal
+        isShowModal={isShowSampleModifyModal}
+        handleCloseModal={() => setIsShowSampleModifyModal(false)}
+      />
+    </>
   )
 }
 

@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { isSoundInList } from 'utils/redux';
 
 const userLibrarySlice = createSlice({
   name: 'userLibrary',
@@ -14,6 +15,10 @@ const userLibrarySlice = createSlice({
       };
     },
     addSoundLibrary: (state, action) => {
+      if (isSoundInList(action.payload.id, state.sounds)) {
+        return state;
+      }
+
       return {
         ...state,
         sounds: [
