@@ -6,7 +6,6 @@ import Svg, { Path } from 'react-native-svg';
 import LinesEllipsis from 'react-lines-ellipsis';
 import { useDispatch, useSelector } from 'react-redux';
 import { addSoundBoard, boardSelector } from 'reducers/boardReducer';
-import OptionsModal from 'components/OptionsModal';
 import AddSampleModal from 'components/AddSampleModal';
 import SampleModifyModal from 'components/SampleModifyModal';
 import { setShow, setSound } from 'reducers/playbarReducer';
@@ -34,7 +33,7 @@ const Pad = ({ sample, handlePress, handleLongPress }) => {
               ellipsis='...'
               trimRight
               basedOn='letters'
-              style={{ textAlign: 'center', color: '#fff', fontSize: 15 }}
+              style={{ textAlign: 'center', color: '#fff', fontSize: 15, width: '100%' }}
             />
             : <Text numberOfLines={4} style={{ textAlign: 'center', color: '#fff', fontSize: 15 }}>{sample.description}</Text>
           }
@@ -49,10 +48,10 @@ const AddButton = ({ onPress }) => {
     <TouchableOpacity
       onPress={onPress}
       activeOpacity={0.8}
-      style={{ flex: 1, margin: 10 }}
+      style={{ margin: 10, flexGrow: 1 }}
     >
       <LinearGradient
-        style={[position.rowCenter, { width: '100%', borderRadius: 10, padding: 20, borderColor: 'rgba(255, 255, 255, 0.6)', borderWidth: 1 }]}
+        style={[position.rowCenter, { borderRadius: 10, padding: 20, borderColor: 'rgba(255, 255, 255, 0.6)', borderWidth: 1 }]}
         colors={['rgba(188, 109, 201, 1)', 'rgba(39, 111, 177, 0.62)']}
         start={{ x: 0.65, y: 0 }}
         end={{ x: 1.2, y: 1 }}
@@ -66,11 +65,32 @@ const AddButton = ({ onPress }) => {
   )
 }
 
+const ClearPlayingSamplesButton = ({ onPress }) => {
+  return (
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={0.8}
+      style={{ margin: 0, display: 'flex' }}
+    >
+      <LinearGradient
+        style={[position.rowCenter, { margin: 10, marginLeft: 0, flex: 1, borderRadius: 50, paddingHorizontal: 20, borderColor: 'rgba(255, 255, 255, 0.6)', borderWidth: 1 }]}
+        colors={['rgba(100, 50, 100, 1)', 'rgba(255, 255, 255, 0.62)']}
+        start={{ x: 0.65, y: 0 }}
+        end={{ x: 1.2, y: 1 }}
+      >
+        <Svg width={22} height={22} viewBox="0 0 20 20" fill="#fff">
+          <Path d="M9.383 3.076A1 1 0 0 1 10 4v12a1 1 0 0 1-1.707.707L4.586 13H2a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1h2.586l3.707-3.707a1 1 0 0 1 1.09-.217zm2.91 4.217a1 1 0 0 1 1.414 0L15 8.586l1.293-1.293a1 1 0 1 1 1.414 1.414L16.414 10l1.293 1.293a1 1 0 0 1-1.414 1.414L15 11.414l-1.293 1.293a1 1 0 0 1-1.414-1.414L13.586 10l-1.293-1.293a1 1 0 0 1 0-1.414z" />
+        </Svg>
+      </LinearGradient>
+    </TouchableOpacity>
+  )
+}
+
 const Home = () => {
   const [isShowAddSampleModal, setIsShowAddSampleModal] = useState(false);
-  const [isShowSampleOptionsModal, setIsShowSampleOptionsModal] = useState(false);
   const [isShowSampleModifyModal, setIsShowSampleModifyModal] = useState(false);
   const [selectedSound, setSelectedSound] = useState(null);
+  const [playingSamples, setPlayingSamples] = useState([]);
   const samples = useSelector(boardSelector).board;
   const dispatch = useDispatch();
 
@@ -78,7 +98,8 @@ const Home = () => {
     setIsShowAddSampleModal(true);
   }
 
-  const openSampleModify = (item) => {
+  const openSampleModify = (sound) => {
+    setSelectedSound(sound);
     setIsShowSampleModifyModal(true);
   }
 
@@ -94,8 +115,23 @@ const Home = () => {
 
   const playSample = async (sample) => {
     const audio = await setAudio(sample);
-    audio.playAsync();
+    audio.playAsync({
+      positionMillis: sample.startPosition,
+      volume: sample.volume,
+      isLooping: sample.isLooping
+    });
+    setPlayingSamples([
+      ...playingSamples,
+      audio
+    ]);
   }
+
+  const clearAllPlayingSamples = async () => {
+    playingSamples?.map(async audio => {
+      await audio.unloadAsync();
+    });
+    setPlayingSamples([]);
+  };
 
   return (
     <>
@@ -113,7 +149,10 @@ const Home = () => {
             )}
             keyExtractor={sample => sample.id}
             numColumns={3}
-            ListHeaderComponent={<AddButton onPress={openAddSample} />}
+            ListHeaderComponent={<View style={{ display: 'flex', alignItems: 'stretch', flexDirection: 'row' }}>
+              <AddButton onPress={openAddSample} />
+              <ClearPlayingSamplesButton onPress={clearAllPlayingSamples} />
+            </View>}
             stickyHeaderIndices={[0]}
             ListEmptyComponent={<Text style={{ fontSize: 16, textAlign: 'center', marginTop: 20, color: '#fff' }}>No sample yet. Go search and add one!</Text>}
             ListFooterComponent={<View style={{ width: '100%', height: 145 }} />}
@@ -130,6 +169,7 @@ const Home = () => {
       <SampleModifyModal
         isShowModal={isShowSampleModifyModal}
         handleCloseModal={() => setIsShowSampleModifyModal(false)}
+        sample={selectedSound}
       />
     </>
   )

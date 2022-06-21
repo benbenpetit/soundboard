@@ -3,8 +3,7 @@ import ReactNativeModal from "react-native-modal";
 import List from "components/List";
 import { useSelector } from "react-redux";
 import { userLibrarySelector } from "reducers/userLibraryReducer";
-import { View } from "react-native";
-import { position } from "assets/styles/global";
+import TopIndicator from "./TopIndicator";
 
 const AddSampleModal = ({ isShowModal, handleCloseModal, handlePrimaryAction, handleSecondaryAction = null, props }) => {
   const sounds = useSelector(userLibrarySelector).userLibrary.sounds;
@@ -22,15 +21,13 @@ const AddSampleModal = ({ isShowModal, handleCloseModal, handlePrimaryAction, ha
       )}
       {...props}
     >
-      <View style={[position.rowCenter, { paddingTop: 50, paddingBottom: 15 }]}>
-        <View style={{ height: 4, width: '50%', borderRadius: 50, backgroundColor: 'rgba(255, 255, 255, 0.75)' }} />
-      </View>
+      <TopIndicator />
       <List
         items={sounds}
         handlePrimaryAction={(item) => handlePrimaryAction(item)}
         handleSecondaryAction={(item) => handleSecondaryAction(item)}
         emptyTitle='No result'
-        emptyDesc='Search any sound by keyword'
+        emptyDesc='Go to search engine to find a sound'
         showPlus={true}
       />
     </ReactNativeModal>

@@ -25,7 +25,10 @@ const userLibrarySlice = createSlice({
           ...state.sounds,
           {
             ...action.payload,
-            addedDate: new Date()
+            addedDate: new Date(),
+            volume: 1,
+            isLooping: false,
+            positionStart: 0
           }
         ]
       };

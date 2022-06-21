@@ -10,12 +10,12 @@ const boardSlice = createSlice({
         ...state, 
         {
           ...action.payload,
-          id: uuid.v4()
+          id: uuid.v4(),
         }
       ];
     },
     removeSoundBoard: (state, action) => {
-      return state.filter(sound => sound.id != action.payload.id);
+      return state.filter(sound => sound.id !== action.payload.id);
     },
     updateSoundBoard: (state, action) => {
       return state.map(sound =>
