@@ -33,6 +33,7 @@
     "react-dom": "17.0.2",
     "react-lines-ellipsis": "^0.15.1",
     "react-native": "0.68.2",
+    "react-native-base64": "^0.2.1",
     "react-native-get-mp3-duration": "^1.0.3",
     "react-native-modal": "^13.0.1",
     "react-native-safe-area-context": "4.2.4",

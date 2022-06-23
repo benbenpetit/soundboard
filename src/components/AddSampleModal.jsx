@@ -23,7 +23,7 @@ const AddSampleModal = ({ isShowModal, handleCloseModal, handlePrimaryAction, ha
     >
       <TopIndicator />
       <List
-        items={sounds}
+        items={[...sounds].sort((a, b) => new Date(b.addedDate) - new Date(a.addedDate))}
         handlePrimaryAction={(item) => handlePrimaryAction(item)}
         handleSecondaryAction={(item) => handleSecondaryAction(item)}
         emptyTitle='No result'

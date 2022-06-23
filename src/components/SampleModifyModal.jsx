@@ -182,27 +182,21 @@ const SampleModifyModal = ({
               )}
             </TouchableOpacity>
           </View>
-          <Pressable
+          <TouchableOpacity
             onPress={() => {
               dispatch(removeSoundBoard(sample));
               handleCloseModal();
               stopSound();
               Vibration.vibrate();
             }}
-            style={{ marginTop: 50, width: '80%', marginLeft: '10%' }}
+            style={[position.rowCenter, { borderRadius: 10, paddingVertical: 16, paddingHorizontal: 20, marginTop: 50, width: '80%', marginLeft: '10%', borderColor: 'rgba(245, 50, 100, 1)', borderWidth: 2 }]}
           >
-            <LinearGradient
-              style={[position.rowCenter, { borderRadius: 10, paddingVertical: 16, paddingHorizontal: 20 }]}
-              colors={['rgba(188, 109, 201, 1)', 'rgba(39, 111, 177, 0.62)']}
-              start={{ x: 0.65, y: 0 }}
-              end={{ x: 1.2, y: 1 }}
-            >
-              <Text style={text.h2}>Remove sample</Text>
-            </LinearGradient>
-          </Pressable>
+            <Text style={[text.h2, { color: 'rgba(245, 50, 100, 1)'} ]}>Remove sample</Text>
+          </TouchableOpacity>
         </ScrollView>
-      )}
-    </ReactNativeModal>
+      )
+      }
+    </ReactNativeModal >
   )
 }
 

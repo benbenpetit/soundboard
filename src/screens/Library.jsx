@@ -104,7 +104,7 @@ const Library = () => {
           id: uuid.v4(),
           description: result.name,
           title: 'Imported sound',
-          url: result.uri,
+          url: blob,
           duration: duration
         }));
       }
@@ -172,7 +172,6 @@ const Library = () => {
         isShowModal={isShowSoundOptionsModal}
         handleCloseModal={() => setIsShowSoundOptionsModal(false)}
         actions={[
-          { label: 'Modify', function: () => console.log('Modifier') },
           { label: 'Delete', function: () => dispatch(removeSoundLibrary(selectedSound.id)) },
           { label: 'Cancel' }
         ]}
