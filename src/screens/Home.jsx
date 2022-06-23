@@ -3,7 +3,6 @@ import { FlatList, SafeAreaView, Text, TouchableOpacity, View, Platform } from '
 import { position, text, wrapper } from 'assets/styles/global';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Path } from 'react-native-svg';
-import LinesEllipsis from 'react-lines-ellipsis';
 import { useDispatch, useSelector } from 'react-redux';
 import { addSoundBoard, boardSelector, updateSoundBoard } from 'reducers/boardReducer';
 import AddSampleModal from 'components/AddSampleModal';
@@ -27,17 +26,7 @@ const Pad = ({ sample, handlePress, handleLongPress }) => {
           start={{ x: 0.65, y: 0 }}
           end={{ x: 1.2, y: 1 }}
         >
-          {Platform.OS === 'web'
-            ? <LinesEllipsis
-              text={sample.description}
-              maxLine='4'
-              ellipsis='...'
-              trimRight
-              basedOn='letters'
-              style={{ textAlign: 'center', color: '#fff', fontSize: 15, width: '100%' }}
-            />
-            : <Text numberOfLines={4} style={{ textAlign: 'center', color: '#fff', fontSize: 15 }}>{sample.description}</Text>
-          }
+          <Text numberOfLines={4} style={{ textAlign: 'center', color: '#fff', fontSize: 15 }}>{sample.description}</Text>
         </LinearGradient>
       </TouchableOpacity>
     </View>

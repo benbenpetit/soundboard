@@ -7,7 +7,6 @@ import { useDispatch } from 'react-redux';
 import { setPlay } from 'reducers/playbarReducer';
 import { formatDuration } from 'utils/formatting';
 import { playAudio, playAudioAtPosition, setAudio, stopAudio } from 'utils/audio';
-import LinesEllipsis from 'react-lines-ellipsis';
 
 const Playbar = ({ isShow, isPlaying, sound }) => {
   const dispatch = useDispatch();
@@ -110,33 +109,11 @@ const Playbar = ({ isShow, isPlaying, sound }) => {
       >
         <Image
           style={{ width: 40, height: 40, borderRadius: 6, backgroundColor: '#222' }}
-          source={{ uri: sound.cover }}
+          source={sound.cover ? { uri: sound.cover } : require('../assets/img/default-cover.jpg')}
         />
         <View style={{ flex: 1, marginHorizontal: 14 }}>
-          {Platform.OS === 'web'
-            ? <>
-              <LinesEllipsis
-                text={sound.description}
-                maxLine='1'
-                ellipsis='...'
-                trimRight
-                basedOn='letters'
-                style={{ marginBottom: 4, fontSize: 16, color: '#fff' }}
-              />
-              <LinesEllipsis
-                text={`${formatDuration(sound.duration).toString()} • ${sound.title.toString()}`}
-                maxLine='1'
-                ellipsis='...'
-                trimRight
-                basedOn='letters'
-                style={{ color: '#bbb', fontSize: 12 }}
-              />
-            </>
-            : <>
-              <Text numberOfLines={1} ellipsizeMode='tail' style={{ marginBottom: 4, fontSize: 16, color: '#fff' }}>{sound.description}</Text>
-              <Text numberOfLines={1} ellipsizeMode='tail' style={text.itemSubtitle}>{formatDuration(sound.duration)} • {sound.title}</Text>
-            </>
-          }
+          <Text numberOfLines={1} ellipsizeMode='tail' style={{ marginBottom: 4, fontSize: 16, color: '#fff' }}>{sound.description}</Text>
+          <Text numberOfLines={1} ellipsizeMode='tail' style={text.itemSubtitle}>{formatDuration(sound.duration)} • {sound.title}</Text>
         </View>
         <TouchableOpacity
           onPress={togglePlay}

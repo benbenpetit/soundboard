@@ -3,7 +3,6 @@ import { Image, Keyboard, Platform, Text, TouchableOpacity, View } from 'react-n
 import Svg, { Path } from 'react-native-svg';
 import { position, text } from 'assets/styles/global';
 import { formatDuration } from 'utils/formatting';
-import LinesEllipsis from 'react-lines-ellipsis';
 
 // Usage:
 
@@ -35,30 +34,8 @@ const ListItem = ({
         source={item.cover ? { uri: item.cover } : require('../assets/img/default-cover.jpg')}
       />
       <View style={{ flex: 1, marginHorizontal: 14 }}>
-        {Platform.OS === 'web'
-          ? <>
-            <LinesEllipsis
-              text={item.description}
-              maxLine='1'
-              ellipsis='...'
-              trimRight
-              basedOn='letters'
-              style={{ marginBottom: 4, fontSize: 16, color: '#fff' }}
-            />
-            <LinesEllipsis
-              text={`${formatDuration(item.duration).toString()} • ${item.title.toString()}`}
-              maxLine='1'
-              ellipsis='...'
-              trimRight
-              basedOn='letters'
-              style={{ color: '#bbb', fontSize: 12 }}
-            />
-          </>
-          : <>
-            <Text numberOfLines={1} ellipsizeMode='tail' style={{ marginBottom: 4, fontSize: 16, color: '#fff' }}>{item.description}</Text>
-            <Text numberOfLines={1} ellipsizeMode='tail' style={text.itemSubtitle}>{formatDuration(item.duration)} • {item.title}</Text>
-          </>
-        }
+        <Text numberOfLines={1} ellipsizeMode='tail' style={{ marginBottom: 4, fontSize: 16, color: '#fff' }}>{item.description}</Text>
+        <Text numberOfLines={1} ellipsizeMode='tail' style={text.itemSubtitle}>{formatDuration(item.duration)} • {item.title}</Text>
       </View>
       {showOptions &&
         <TouchableOpacity
