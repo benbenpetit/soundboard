@@ -28,7 +28,8 @@ const userLibrarySlice = createSlice({
             addedDate: new Date(),
             volume: 1,
             isLooping: false,
-            positionStart: 0
+            positionStart: 0,
+            positionEnd: 1
           }
         ]
       };

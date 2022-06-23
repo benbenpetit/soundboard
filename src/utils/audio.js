@@ -32,7 +32,6 @@ export const unloadAudio = async (audio) => {
 
 export const playAudioAtPosition = async (audio) => {
   const status = await audio.getStatusAsync();
-  await audio.setStatusAsync({ positionMillis: status.positionMillis });
+  await audio.setStatusAsync({positionMillis: status.positionMillis});
   await audio.playAsync();
 }
-  

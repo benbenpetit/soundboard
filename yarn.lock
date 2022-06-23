@@ -1483,6 +1483,11 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
+"@ptomasroos/react-native-multi-slider@^2.2.2":
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/@ptomasroos/react-native-multi-slider/-/react-native-multi-slider-2.2.2.tgz#35a97fb8c355627c6a2ded010b360ac5728b44ad"
+  integrity sha512-HWyCnRD3Z3SbHK2FLWYmBBqd1B4iXipeKv1+AK0FoY/CElEDTEixHE8hN60TsqxalPrznn798LE2Q4tHuCiyaA==
+
 "@react-native-async-storage/async-storage@^1.17.6":
   version "1.17.6"
   resolved "https://registry.yarnpkg.com/@react-native-async-storage/async-storage/-/async-storage-1.17.6.tgz#ddb3520d051f71698c8a0e79e8959a7bf6d9f43b"
@@ -3341,6 +3346,11 @@ expo-font@~10.1.0:
   integrity sha512-vmhzpE95Ym4iOj8IELof+C/3Weert2B3LyxV5rBjGosjzBdov+o+S6b5mN7Yc9kyEGykwB6k7npL45X3hFYDQA==
   dependencies:
     fontfaceobserver "^2.1.0"
+
+expo-haptics@~11.2.0:
+  version "11.2.0"
+  resolved "https://registry.yarnpkg.com/expo-haptics/-/expo-haptics-11.2.0.tgz#0ffb9f82395e88f9f66ceebb0f3279739311412c"
+  integrity sha512-ijuWU2ljLBGjIf7OQCvnBQIu/chezndnWkfi518XxvK0hudA4+fAe98mqHO6hom9GexNRxhQZbXc0hcVnxkaiA==
 
 expo-keep-awake@~10.1.1:
   version "10.1.1"
@@ -5966,6 +5976,11 @@ react-native-switch@^1.5.1:
   integrity sha512-nfuPrrPKzeZL1mQH0u1rlEGv9W1+okU/xOcNNaDNz/LhSdzWOZ04ogJ4iEj7Sth3hkBxv4XwFQZTgCc07we+cg==
   dependencies:
     prop-types "^15.6.0"
+
+react-native-trimmer@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/react-native-trimmer/-/react-native-trimmer-1.1.1.tgz#f3855672fe605c6b65aa7e2c704446c63a44e0f0"
+  integrity sha512-fMdSirI9D7XoLcq30tvmOGzxhkINmvlyE71fdfLQtkNeHmwtxXVNcFAaRyqSPFqwIFoRVFPSJl25vy7EqWc33Q==
 
 react-native-uuid@^2.0.1:
   version "2.0.1"

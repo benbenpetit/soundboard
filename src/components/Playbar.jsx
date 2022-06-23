@@ -12,6 +12,8 @@ import LinesEllipsis from 'react-lines-ellipsis';
 const Playbar = ({ isShow, isPlaying, sound }) => {
   const dispatch = useDispatch();
   const [playingSound, setPlayingSound] = useState(null);
+  const [isSoundPlaying, setIsSoundPlaying] = useState(false);
+  const [isFinished, setIsFinished] = useState(false);
   const appearAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -28,20 +30,26 @@ const Playbar = ({ isShow, isPlaying, sound }) => {
     ).start();
   }, [isShow]);
 
+  useEffect(() => {
+    dispatch(setPlay(isSoundPlaying));
+  }, [isSoundPlaying]);
+
   const onAudioUpdate = async (audioStatus) => {
     if (!audioStatus.isLoaded) {
       if (audioStatus.error) {
         console.log(`Encountered a fatal error during playback: ${audioStatus.error}`);
       }
-    } else {
+    }
+    else {
       if (audioStatus.isPlaying) {
-        dispatch(setPlay(true));
+        setIsSoundPlaying(true);
+        setIsFinished(false);
       } else {
-        dispatch(setPlay(false));
+        setIsSoundPlaying(false);
       }
 
       if (audioStatus.didJustFinish && !audioStatus.isLooping) {
-        // setPlayingSound(null);
+        setIsFinished(true);
       }
     }
   }
@@ -69,7 +77,11 @@ const Playbar = ({ isShow, isPlaying, sound }) => {
     if (isPlaying) {
       await playingSound.audio.pauseAsync();
     } else {
-      await playAudioAtPosition(playingSound.audio);
+      if (isFinished) {
+        await playSelectedSound();
+      } else {
+        await playAudioAtPosition(playingSound.audio);
+      }
     }
   }
 
@@ -109,7 +121,7 @@ const Playbar = ({ isShow, isPlaying, sound }) => {
                 ellipsis='...'
                 trimRight
                 basedOn='letters'
-                style={{ marginBottom: 4, fontSize: 16, color: '#fff' } }
+                style={{ marginBottom: 4, fontSize: 16, color: '#fff' }}
               />
               <LinesEllipsis
                 text={`${formatDuration(sound.duration).toString()} • ${sound.title.toString()}`}
@@ -121,7 +133,7 @@ const Playbar = ({ isShow, isPlaying, sound }) => {
               />
             </>
             : <>
-              <Text numberOfLines={1} ellipsizeMode='tail' style={{ marginBottom: 4, fontSize: 16, color: '#fff' } }>{sound.description}</Text>
+              <Text numberOfLines={1} ellipsizeMode='tail' style={{ marginBottom: 4, fontSize: 16, color: '#fff' }}>{sound.description}</Text>
               <Text numberOfLines={1} ellipsizeMode='tail' style={text.itemSubtitle}>{formatDuration(sound.duration)} • {sound.title}</Text>
             </>
           }

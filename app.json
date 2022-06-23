@@ -27,7 +27,12 @@
       }
     },
     "web": {
-      "favicon": "./src/assets/favicons/favicon-32x32.png"
+      "favicon": "./src/assets/favicons/favicon-32x32.png",
+      "build": {
+        "babel": {
+          "include": ["@ptomasroos/react-native-multi-slider"]
+        }
+      }
     }
   }
 }

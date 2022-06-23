@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlatList, SafeAreaView, Text, TouchableOpacity, View, Platform } from 'react-native';
 import { position, text, wrapper } from 'assets/styles/global';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Path } from 'react-native-svg';
 import LinesEllipsis from 'react-lines-ellipsis';
 import { useDispatch, useSelector } from 'react-redux';
-import { addSoundBoard, boardSelector } from 'reducers/boardReducer';
+import { addSoundBoard, boardSelector, updateSoundBoard } from 'reducers/boardReducer';
 import AddSampleModal from 'components/AddSampleModal';
 import SampleModifyModal from 'components/SampleModifyModal';
 import { setShow, setSound } from 'reducers/playbarReducer';
 import { setAudio } from 'utils/audio';
+import { useDebounce } from 'use-debounce';
 
 const Pad = ({ sample, handlePress, handleLongPress }) => {
   return (
@@ -92,6 +93,14 @@ const Home = () => {
   const [selectedSound, setSelectedSound] = useState(null);
   const [playingSamples, setPlayingSamples] = useState([]);
   const samples = useSelector(boardSelector).board;
+  const [sliderValue, setSliderValue] = useState(0.5);
+  const [sliderValueDebounced] = useDebounce(sliderValue, 100);
+  const [trackName, setTrackName] = useState('');
+  const [trackNameDebounced] = useDebounce(trackName, 300);
+  const [isLooping, setIsLooping] = useState(false);
+  const [isLoopingDebounced] = useDebounce(isLooping, 200);
+  const [sliderValues, setSliderValues] = useState([0, 0]);
+  const [sliderValuesDebounced] = useDebounce(sliderValues, 50);
   const dispatch = useDispatch();
 
   const openAddSample = () => {
@@ -115,10 +124,16 @@ const Home = () => {
 
   const playSample = async (sample) => {
     const audio = await setAudio(sample);
-    audio.playAsync({
-      positionMillis: sample.startPosition,
+    await audio.setStatusAsync({
+      positionMillis: sample.duration * 1000 * sample.positionStart,
       volume: sample.volume,
       isLooping: sample.isLooping
+    })
+    await audio.playAsync();
+    audio.setOnPlaybackStatusUpdate(async status => {
+      if (status.positionMillis > sample.duration * 1000 * sample.positionEnd) {
+        await audio.unloadAsync();
+      }
     });
     setPlayingSamples([
       ...playingSamples,
@@ -132,6 +147,24 @@ const Home = () => {
     });
     setPlayingSamples([]);
   };
+
+  useEffect(() => {
+    setTrackName(selectedSound?.description);
+    setSliderValue(selectedSound?.volume);
+    setIsLooping(selectedSound?.isLooping);
+    setSliderValues([selectedSound?.positionStart, selectedSound?.positionEnd]);
+  }, [selectedSound]);
+
+  useEffect(() => {
+    dispatch(updateSoundBoard({
+      ...selectedSound,
+      description: trackName,
+      volume: sliderValue,
+      isLooping: isLooping,
+      positionStart: sliderValues[0],
+      positionEnd: sliderValues[1]
+    }));
+  }, [sliderValueDebounced, trackNameDebounced, isLoopingDebounced, sliderValuesDebounced]);
 
   return (
     <>
@@ -170,6 +203,14 @@ const Home = () => {
         isShowModal={isShowSampleModifyModal}
         handleCloseModal={() => setIsShowSampleModifyModal(false)}
         sample={selectedSound}
+        trackName={trackName}
+        setTrackName={setTrackName}
+        sliderValue={sliderValue}
+        setSliderValue={setSliderValue}
+        isLooping={isLooping}
+        setIsLooping={setIsLooping}
+        sliderValues={sliderValues}
+        setSliderValues={setSliderValues}
       />
     </>
   )
