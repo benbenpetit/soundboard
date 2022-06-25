@@ -104,7 +104,7 @@ const Library = () => {
           id: uuid.v4(),
           description: result.name,
           title: 'Imported sound',
-          url: blob,
+          url: result.uri,
           duration: duration
         }));
       }

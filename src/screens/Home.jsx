@@ -122,6 +122,10 @@ const Home = () => {
     audio.setOnPlaybackStatusUpdate(async status => {
       if (status.positionMillis > sample.duration * 1000 * sample.positionEnd) {
         await audio.unloadAsync();
+
+        if (sample.isLooping) {
+          playSample(sample);
+        }
       }
     });
     setPlayingSamples([
