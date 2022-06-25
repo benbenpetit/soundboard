@@ -1,5 +1,6 @@
 # SoundBoard project in React Native
 
+[Project almost finished, missing documentation]
 
 ### Install dependances
 
